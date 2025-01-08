@@ -13,8 +13,8 @@ upset_plot(
   n = 50,
   freq_min = NULL,
   barchart_height = 50,
-  frequency_labels = F,
-  phylogroups = F
+  frequency_labels = FALSE,
+  phylogroups = FALSE
 )
 }
 \arguments{

@@ -12,6 +12,10 @@ nodes_postorder(
 }
 \arguments{
 \item{tree}{An object of the class phylo}
+
+\item{node}{The node to start the traversal from}
+
+\item{nodes}{A vector to store the node numbers}
 }
 \value{
 A numeric vector with node numbers

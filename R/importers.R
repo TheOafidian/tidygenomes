@@ -60,9 +60,9 @@ as_tidygenomes <- function(data) {
     
     message("Creating tidygenomes object from pangenome table")
     tg <- list(
-      genomes = tibble(genome = unique(data$genome)),
+      genomes = tidyr::tibble(genome = unique(data$genome)),
       genes = data,
-      orthogroups = tibble(orthogroup = unique(data$orthogroup))
+      orthogroups = tidyr::tibble(orthogroup = unique(data$orthogroup))
     )
     
   } else if (is_genome_tree(data)) {
@@ -98,6 +98,7 @@ as_tidygenomes <- function(data) {
       c(data$genome_1, data$genome_2) %>%
       unique() %>%
       {tibble(genome = .)}
+    
     tg <- list(genomes = genomes, pairs = pairs)
     
   } else {
@@ -133,7 +134,7 @@ as_tidygenomes <- function(data) {
 #'   orthogroup = c("og alpha", "og beta", "og alpha")
 #' )
 #' tg <- as_tidygenomes(genomes)
-#' tg <- add_tidygenomes(genes)
+#' tg <- tg %>% add_tidygenomes(genes)
 #' 
 #' @export
 add_tidygenomes <- function(tg, data) {
@@ -438,7 +439,12 @@ inflate_pangenome <- function(tg_meta, tg_species, species) {
 #' phylogenetic tree and a root location in the tree.
 #' 
 #' @param genomes A genome table with a column `genome`
+#' @param pangenome A pangenome table with columns `gene`, `genome` and
+#'  `orthogroup`
 #' @param tree An object of class phylo with tips corresponding to genomes
+#' @param phylogroups A table with phylogroups
+#' @param genome_identifier The name of a variable from the genomes table that
+#'  is used to identify genomes in the phylogroups table
 #' @param root Three tips that identify the root (see [root_tree.phylo])
 #' 
 #' @return A tidygenomes object

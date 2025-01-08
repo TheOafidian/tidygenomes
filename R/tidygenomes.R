@@ -10,4 +10,3 @@
 #' @details
 #' `tidygenomes` contains six types of functions: readers, importers,
 #' handlers, enhancers, getters and plotters.
-NULL

@@ -16,9 +16,17 @@ prepare_tidygenomes(
 \arguments{
 \item{genomes}{A genome table with a column \code{genome}}
 
+\item{pangenome}{A pangenome table with columns \code{gene}, \code{genome} and
+\code{orthogroup}}
+
 \item{tree}{An object of class phylo with tips corresponding to genomes}
 
+\item{phylogroups}{A table with phylogroups}
+
 \item{root}{Three tips that identify the root (see \link{root_tree.phylo})}
+
+\item{genome_identifier}{The name of a variable from the genomes table that
+is used to identify genomes in the phylogroups table}
 }
 \value{
 A tidygenomes object

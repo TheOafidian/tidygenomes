@@ -4,7 +4,7 @@
 \alias{heatmap}
 \title{Construct an heatmap to explore a pair variable}
 \usage{
-heatmap(tg, genome_label, distance, complete_pairs = T)
+heatmap(tg, genome_label, distance, complete_pairs = TRUE)
 }
 \arguments{
 \item{tg}{A tidygenomes object}
@@ -14,6 +14,8 @@ genome label}
 
 \item{distance}{Variable (unquoted) from the pair table to plot on the
 heatmap}
+
+\item{complete_pairs}{Should the pairs be completed?}
 }
 \value{
 A ggplot object

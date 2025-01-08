@@ -6,14 +6,14 @@
 #' variables of the phylogroups table, if present.
 #'
 #' @param tg A tidygenomes object
-#' @param ... Filtering expression to pass on to [dplyr::filter()]
+#' @inheritDotParams dplyr::filter
 #' 
 #' @return A tidygenomes object
 #'
 #' @examples
 #' genomes <- data.frame(genome = c("genome 1", "genome 2"))
 #' tg <- as_tidygenomes(genomes)
-#' tg <- filter_genomes(genomes, genome == "genome 1")
+#' tg <- tg %>% filter_genomes(genome == "genome 1")
 #' 
 #' @export
 filter_genomes <- function(tg, ...) {
@@ -86,7 +86,7 @@ filter_genomes <- function(tg, ...) {
 #' will not remove genomes that have zero genes left after orthogroup filtering.
 #'
 #' @param tg A tidygenomes object
-#' @param ... Filtering expression to pass on to [dplyr::filter()]
+#' @inheritDotParams dplyr::filter
 #' 
 #' @return A tidygenomes object
 #' 

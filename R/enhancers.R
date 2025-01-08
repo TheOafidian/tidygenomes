@@ -28,6 +28,7 @@
 #' @export
 add_patterns <- function(tg) {
   
+  orthogroup <- pattern <- genome <- present <- NULL
   if (is.null(tg$genes) & is.null(tg$occurrences)) {
     stop("No gene or occurrence table present")
   } 
@@ -45,28 +46,28 @@ add_patterns <- function(tg) {
     occurrences %>%
     mutate(present = TRUE) %>%
     spread(key = genome, value = present, fill = FALSE) %>%
-    nest(orthogroup) %>%
-    mutate(pattern = str_c("p", 1:n()))
+    nest(data = orthogroup) %>%
+    mutate(pattern = stringr::str_c("p", 1:n()))
   
   orthogroups_patterns <-
     patterns_raw %>%
-    unnest() %>%
+    unnest(cols = colnames(patterns_raw)) %>%
     select(orthogroup, pattern)
   
   tg$components <-
     patterns_raw %>%
-    select(- data) %>%
-    gather(key = "genome", value = "present", - pattern) %>%
-    filter(present) %>%
+    dplyr::select(- data) %>%
+    tidyr::gather(key = "genome", value = "present", - pattern) %>%
+    dplyr::filter(present) %>%
     select(- present)
   
   tg$patterns <- 
     patterns_raw %>%
-    mutate(frequency = map_int(data, ~ length(.$orthogroup))) %>%
+    mutate(frequency = purrr::map_int(data, ~ length(.$orthogroup))) %>%
     select(pattern, frequency)
   
   tg %>%
-    modify_at("orthogroups", left_join, orthogroups_patterns, by = "orthogroup")
+    purrr::modify_at("orthogroups", left_join, orthogroups_patterns, by = "orthogroup")
   
 }
 
@@ -160,7 +161,9 @@ add_phylogroup_measures <- function(tg) {
 #' 
 #' @export
 add_exclusivity <- function(tg, similarity) {
-  
+  genome <- phylogroup <- genome_1 <- genome_2 <- NULL
+  phylogroup_1 <- phylogroup_2 <- NULL
+
   if (is.null(tg$phylogroups)) stop("No phylogroups present")
   
   similarity <- rlang::enexpr(similarity)
@@ -274,7 +277,7 @@ add_phylogroup_color <- function(tg, n = 12) {
     mutate(
       phylogroup_fct = factor(phylogroup, levels = !! phylogroups_ordered)
     ) %>%
-    arrange(phylogroup_fct) %>%
+    dplyr::arrange(phylogroup_fct) %>%
     mutate(
       phylogroup_color = 
         1:UQ(n) %>% as.character() %>% rep_len(!! n_phylogroups)

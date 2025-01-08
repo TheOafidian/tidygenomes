@@ -71,11 +71,11 @@ upset_plot <- function(
   n = 50,
   freq_min = NULL, 
   barchart_height = 50,
-  frequency_labels = F,
-  phylogroups = F
+  frequency_labels = FALSE,
+  phylogroups = FALSE
 ) {
   
-  genome_name <- rlang::enexpr(genome_name) 
+  genome_name <- rlang::enexpr(genome_name)
   genome_col <- rlang::enexpr(genome_col)
   genome_bold <- rlang::enexpr(genome_bold)
   
@@ -83,7 +83,7 @@ upset_plot <- function(
   
   tg$patterns <-
     tg$patterns %>%
-    arrange(desc(frequency)) %>%
+    dplyr::arrange(desc(frequency)) %>%
     slice(1:UQ(n)) %>%
     {if (! is.null(freq_min)) filter(., frequency >= !! freq_min) else .} %>%
     mutate(pattern_fct = factor(pattern, levels = pattern)) 
@@ -93,7 +93,7 @@ upset_plot <- function(
     mutate(node_fct = factor(
       node, levels = !! tipnodes_ladderized(tg$tree)
     )) %>%
-    arrange(desc(node_fct)) %>%
+    dplyr::arrange(desc(node_fct)) %>%
     mutate(genome_name_fct = factor(
       !! genome_name, levels = !! genome_name
     )) %>%
@@ -180,11 +180,11 @@ upset_plot <- function(
 #'   genome label
 #' @param distance Variable (unquoted) from the pair table to plot on the
 #'   heatmap
-#' 
+#' @param complete_pairs Should the pairs be completed?
 #' @return A ggplot object
 #' 
 #' @export
-heatmap <- function(tg, genome_label, distance, complete_pairs = T) {
+heatmap <- function(tg, genome_label, distance, complete_pairs = TRUE) {
   
   genome_label <- rlang::enexpr(genome_label)
   distance <- rlang::enexpr(distance)
@@ -193,7 +193,7 @@ heatmap <- function(tg, genome_label, distance, complete_pairs = T) {
     tg$genomes %>%
     mutate(genome_label = !! genome_label) %>%
     mutate(node_fct = factor(node, levels = tipnodes_ladderized(tg$tree))) %>%
-    arrange(node_fct) %>%
+    dplyr::arrange(node_fct) %>%
     mutate(genome_label_fct = factor(genome_label, levels = genome_label))
   
   tg$pairs %>%

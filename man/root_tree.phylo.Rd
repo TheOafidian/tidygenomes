@@ -4,12 +4,29 @@
 \alias{root_tree.phylo}
 \title{Root tree given three tips}
 \usage{
-root_tree.phylo(tree, tips, edge_label = F)
+root_tree.phylo(tree, tips, ...)
 }
 \arguments{
 \item{tree}{An object of class phylo}
 
 \item{tips}{Three tip labels}
+
+\item{...}{
+  Arguments passed on to \code{\link[ape:root]{ape::root.phylo}}
+  \describe{
+    \item{\code{phy}}{an object of class \code{"phylo"} or \code{"multiPhylo"}.}
+    \item{\code{outgroup}}{a vector of mode numeric or character specifying the
+    new outgroup.}
+    \item{\code{node}}{alternatively, a node number where to root the tree.}
+    \item{\code{resolve.root}}{a logical specifying whether to resolve the new
+    root as a bifurcating node.}
+    \item{\code{interactive}}{if \code{TRUE} the user is asked to select the node
+    by clicking on the tree which must be plotted.}
+    \item{\code{edgelabel}}{a logical value specifying whether to treat node
+    labels as edge labels and thus eventually switching them so that
+    they are associated with the correct edges when using
+    \code{\link[ape]{drawSupportOnEdges}} (see Czech et al. 2016).}
+  }}
 }
 \value{
 An object of class phylo

@@ -41,8 +41,14 @@ test_that("Can read a genome tree", {
 # })
 
 test_that("Throw error when data has overlapping data", {
-  tg <- as_tidygenomes(pangenome_data)
-  tg2 <- as_tidygenomes(pangenome_data)
+  testthat::expect_message(
+    tg <- as_tidygenomes(pangenome_data),
+    "Creating tidygenomes object from pangenome table"
+  )
+  testthat::expect_message(
+    tg2 <- as_tidygenomes(pangenome_data),
+    "Creating tidygenomes object from pangenome table"
+  )
   expect_error(
     tg_merge <- add_tidygenomes(tg, tg2),
     "contain overlapping components"
@@ -50,6 +56,10 @@ test_that("Throw error when data has overlapping data", {
 })
 
 test_that("Can add tidygenomes object to tidygenomes object", {
-    tg <- as_tidygenomes(genome_data)
+    testthat::expect_message(
+      tg <- as_tidygenomes(genome_data),
+      "Creating tidygenomes object from genome table"
+    )
     tg_merge <- add_tidygenomes(tg, pangenome_data)
+    expect_s3_class(tg_merge, "tidygenomes")
 })

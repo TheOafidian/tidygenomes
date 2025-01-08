@@ -139,7 +139,9 @@ as_tidygenomes <- function(data) {
 #' @export
 add_tidygenomes <- function(tg, data) {
   
-  data <- as_tidygenomes(data)
+  suppressMessages(
+    data <- as_tidygenomes(data)
+  )
   
   common_components <- intersect(names(tg), names(data))
   if (length(common_components) != 1) {

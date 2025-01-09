@@ -39,15 +39,15 @@ read_pangenome <- function(path) {
   genes_assigned <- 
     path_orthogroups %>%
     readr::read_tsv(col_names = TRUE, col_types = readr::cols(.default = "c")) %>%
-    dplyr::rename(orthogroup = 1) %>%
-    tidyr::gather(key = "genome", value = "gene", na.rm = TRUE, - orthogroup) %>%
-    tidyr::separate_rows(gene, sep = ", ")
+    rename(orthogroup = 1) %>%
+    gather(key = "genome", value = "gene", na.rm = TRUE, - orthogroup) %>%
+    separate_rows(gene, sep = ", ")
   
   genes_unassigned <-
     path_unassigned %>%
     readr::read_tsv(col_names = TRUE, col_types = readr::cols(.default = "c")) %>%
-    dplyr::rename(orthogroup = 1) %>%
-    tidyr::gather(key = "genome", value = "gene", na.rm = TRUE, - orthogroup)
+    rename(orthogroup = 1) %>%
+    gather(key = "genome", value = "gene", na.rm = TRUE, - orthogroup)
   
   genes <- bind_rows(genes_assigned, genes_unassigned)
   
@@ -88,12 +88,12 @@ read_phylip_distmat <- function(path, skip = 8, include_diagonal = TRUE) {
   
   distances <- 
     distances_raw %>%
-    dplyr::select_if(~ ! all(is.na(.))) %>%
-    dplyr::select(1:(!! n)) %>%
+    select_if(~ ! all(is.na(.))) %>%
+    select(1:(!! n)) %>%
     `names<-`(names) %>%
-    dplyr::mutate(sequence_1 = !! names) %>%
-    tidyr::gather(key = "sequence_2", value = "distance", - sequence_1, na.rm = T) %>%
-    dplyr::mutate_at("distance", as.double)
+    mutate(sequence_1 = !! names) %>%
+    gather(key = "sequence_2", value = "distance", - sequence_1, na.rm = T) %>%
+    mutate_at("distance", as.double)
   
   distances_1 <- filter(distances, sequence_1 >= sequence_2)
   

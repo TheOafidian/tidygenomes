@@ -10,6 +10,8 @@
 #' @export
 get_tree <- function(tg) {
   
+  if (is.null(tg$tree)) stop("No tree available")
+  
   # replace tipnode names with genome names
   lut_tips <- structure(tg$genomes$genome, names = tg$genomes$node)
   

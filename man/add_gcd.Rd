@@ -4,14 +4,31 @@
 \alias{add_gcd}
 \title{Add gene content distance}
 \usage{
-add_gcd(tg, method, binary)
+add_gcd(tg, ...)
 }
 \arguments{
 \item{tg}{A tidygenomes object}
 
-\item{method}{See \code{\link[vegan:vegdist]{vegan::vegdist()}}}
-
-\item{binary}{See \code{\link[vegan:vegdist]{vegan::vegdist()}}}
+\item{...}{
+  Arguments passed on to \code{\link[vegan:vegdist]{vegan::vegdist}}
+  \describe{
+    \item{\code{x}}{Community data matrix.}
+    \item{\code{method}}{Dissimilarity index, partial match to
+    \code{"manhattan"}, \code{"euclidean"}, \code{"canberra"},
+    \code{"clark"}, \code{"bray"}, \code{"kulczynski"},
+    \code{"jaccard"}, \code{"gower"}, \code{"altGower"},
+    \code{"morisita"}, \code{"horn"}, \code{"mountford"}, \code{"raup"},
+    \code{"binomial"}, \code{"chao"}, \code{"cao"}, \code{"mahalanobis"},
+    \code{"chisq"}, \code{"chord"}, \code{"hellinger"},
+    \code{"aitchison"}, or \code{"robust.aitchison"}.}
+    \item{\code{binary}}{Perform presence/absence standardization before analysis
+    using \code{\link[vegan]{decostand}}.}
+    \item{\code{diag}}{Compute diagonals. }
+    \item{\code{upper}}{Return only the upper diagonal. }
+    \item{\code{na.rm}}{Pairwise deletion of missing observations when
+    computing dissimilarities (but some dissimilarities may still be
+    \code{NA}, although calculation is handled).}
+  }}
 }
 \value{
 A tidygenomes object
@@ -19,6 +36,5 @@ A tidygenomes object
 \description{
 This function adds a variable gcd (gene content distance) to the pair table.
 As the name suggests, these are distances between genomes based on shared
-gene content. Various types of distances can be computed; the function uses
-the vegan package for this.
+gene content. Various types of distances can be computed; see \code{\link[vegan:vegdist]{vegan::vegdist()}}.
 }

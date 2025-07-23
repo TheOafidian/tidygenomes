@@ -20,11 +20,14 @@
 #' @export
 read_pangenome <- function(path) {
   
-  path_orthogroups <- 
-    paste0(path, "/Orthogroups.?sv") %>% 
+  gene <- NULL
+  orthogroup <- NULL
+
+  path_orthogroups <-
+    paste0(path, "/Orthogroups.?sv") %>%
     Sys.glob()
-  path_unassigned <- 
-    paste0(path, "/Orthogroups_UnassignedGenes.?sv") %>% 
+  path_unassigned <-
+    paste0(path, "/Orthogroups_UnassignedGenes.?sv") %>%
     Sys.glob()
   
   if (file.exists(path_orthogroups) & file.exists(path_unassigned)) {
@@ -35,16 +38,16 @@ read_pangenome <- function(path) {
   
   genes_assigned <- 
     path_orthogroups %>%
-    readr::read_tsv(col_names = T, col_types = cols(.default = "c")) %>%
-    rename(orthogroup = 1) %>%
-    gather(key = "genome", value = "gene", na.rm = T, - orthogroup) %>%
-    separate_rows(gene, sep = ", ")
+    readr::read_tsv(col_names = TRUE, col_types = readr::cols(.default = "c")) %>%
+    dplyr::rename(orthogroup = 1) %>%
+    tidyr::gather(key = "genome", value = "gene", na.rm = TRUE, - orthogroup) %>%
+    tidyr::separate_rows(gene, sep = ", ")
   
-  genes_unassigned <- 
+  genes_unassigned <-
     path_unassigned %>%
-    readr::read_tsv(col_names = T, col_types = cols(.default = "c")) %>%
-    rename(orthogroup = 1) %>%
-    gather(key = "genome", value = "gene", na.rm = T, - orthogroup)
+    readr::read_tsv(col_names = TRUE, col_types = readr::cols(.default = "c")) %>%
+    dplyr::rename(orthogroup = 1) %>%
+    tidyr::gather(key = "genome", value = "gene", na.rm = TRUE, - orthogroup)
   
   genes <- bind_rows(genes_assigned, genes_unassigned)
   
@@ -70,10 +73,13 @@ read_pangenome <- function(path) {
 #' @return A tibble with the variables sequence_1, sequence_2 and distance
 #' 
 #' @export
-read_phylip_distmat <- function(path, skip = 8, include_diagonal = T) {
+read_phylip_distmat <- function(path, skip = 8, include_diagonal = TRUE) {
   
+  sequence_1 <- sequence_2 <- sequence_1_temp <- sequence_2_temp <- NULL
+  distance <- NULL
+ 
   distances_raw <- 
-    readr::read_tsv(path, col_names = F, skip = skip) %>%
+    readr::read_tsv(path, col_names = FALSE, skip = skip) %>%
     separate(ncol(.), into = c("name", "number"), sep = " ")
   
   names <- distances_raw$name
@@ -82,12 +88,12 @@ read_phylip_distmat <- function(path, skip = 8, include_diagonal = T) {
   
   distances <- 
     distances_raw %>%
-    select_if(~ ! all(is.na(.))) %>%
-    select(1:(!! n)) %>%
+    dplyr::select_if(~ ! all(is.na(.))) %>%
+    dplyr::select(1:(!! n)) %>%
     `names<-`(names) %>%
-    mutate(sequence_1 = !! names) %>%
-    gather(key = "sequence_2", value = "distance", - sequence_1, na.rm = T) %>%
-    mutate_at("distance", as.double)
+    dplyr::mutate(sequence_1 = !! names) %>%
+    tidyr::gather(key = "sequence_2", value = "distance", - sequence_1, na.rm = T) %>%
+    dplyr::mutate_at("distance", as.double)
   
   distances_1 <- filter(distances, sequence_1 >= sequence_2)
   

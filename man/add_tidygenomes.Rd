@@ -30,6 +30,6 @@ genes <- data.frame(
   orthogroup = c("og alpha", "og beta", "og alpha")
 )
 tg <- as_tidygenomes(genomes)
-tg <- add_tidygenomes(genes)
+tg <- tg \%>\% add_tidygenomes(genes)
 
 }

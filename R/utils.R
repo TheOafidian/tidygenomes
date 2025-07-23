@@ -4,6 +4,8 @@
 #' traversal (tips first).
 #'
 #' @param tree An object of the class phylo
+#' @param node The node to start the traversal from
+#' @param nodes A vector to store the node numbers
 #'
 #' @return A numeric vector with node numbers
 #'
@@ -28,6 +30,8 @@ nodes_postorder <-
 #' traversal (root first).
 #'
 #' @param tree An object of the class phylo
+#' @param node The node to start the traversal from
+#' @param nodes A vector to store the node numbers
 #'
 #' @return A numeric vector with node numbers
 #'
@@ -174,11 +178,12 @@ fix_pair_order <- function(pairs) {
 #'
 #' @param tree An object of class phylo
 #' @param tips Three tip labels
+#' @inheritDotParams ape::root.phylo
 #'
 #' @return An object of class phylo
 #'
 #' @export
-root_tree.phylo <- function(tree, tips, edge_label = F) {
+root_tree.phylo <- function(tree, tips, ...) {
   
   if (! "phylo" %in% class(tree)) {
     stop("tree should be of class phylo")
@@ -191,7 +196,7 @@ root_tree.phylo <- function(tree, tips, edge_label = F) {
     {.[. > length(tree$tip.label)]} %>%
     {.[. == max(.)]} %>%
     {.[1]}
-  tree <- tree %>% ape::root.phylo(node = root_new, edgelabel = edge_label)
+  tree <- tree %>% ape::root.phylo(node = root_new, ...)
   
   # resolve root node such that first tip is (part of) outgroup
   outgroup <-
@@ -202,7 +207,7 @@ root_tree.phylo <- function(tree, tips, edge_label = F) {
   tree <- 
     tree %>% 
     ape::root.phylo(
-      outgroup = outgroup, edgelabel = edge_label, resolve.root = T
+      outgroup = outgroup, edgelabel = edge_label, resolve.root = TRUE
     )
   
   # divide root branch length

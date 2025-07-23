@@ -4,7 +4,7 @@
 \alias{read_phylip_distmat}
 \title{Read a phylip formatted distance matrix}
 \usage{
-read_phylip_distmat(path, skip = 8, include_diagonal = T)
+read_phylip_distmat(path, skip = 8, include_diagonal = TRUE)
 }
 \arguments{
 \item{path}{Path to a phylip formatted distance matrix file}

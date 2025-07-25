@@ -38,6 +38,8 @@ get_tree <- function(tg) {
 #' @export
 pangenome_matrix <- function(tg) {
   
+  if (is.null(tg$genes)) stop("No genes table available")
+
   tg$genes %>%
     count(genome, orthogroup) %>%
     spread(key = orthogroup, value = n, fill = 0) %>%

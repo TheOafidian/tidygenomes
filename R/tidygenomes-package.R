@@ -4,6 +4,7 @@
 ## usethis namespace: start
 #' @importFrom dplyr mutate
 #' @importFrom dplyr select
+#' @importFrom dplyr rename
 #' @importFrom dplyr summarise
 #' @importFrom dplyr group_by
 #' @importFrom dplyr filter

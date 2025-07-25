@@ -10,6 +10,8 @@
 #' @export
 get_tree <- function(tg) {
   
+  if (is.null(tg$tree)) stop("No tree available")
+  
   # replace tipnode names with genome names
   lut_tips <- structure(tg$genomes$genome, names = tg$genomes$node)
   
@@ -36,6 +38,8 @@ get_tree <- function(tg) {
 #' @export
 pangenome_matrix <- function(tg) {
   
+  if (is.null(tg$genes)) stop("No genes table available")
+
   tg$genes %>%
     count(genome, orthogroup) %>%
     spread(key = orthogroup, value = n, fill = 0) %>%

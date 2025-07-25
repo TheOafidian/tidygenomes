@@ -211,3 +211,56 @@ heatmap <- function(tg, genome_label, distance, complete_pairs = TRUE) {
     theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1))
 
 }
+
+
+#' A density plot of the number of orthogroups per genome
+#'
+#' This function draws a density plot of the number of orthogroups per genome and indicates
+#' a few predefined cumulative density percentages.
+#' 
+#' @param tg A tidygenomes object
+#' @param limits A vector of cumulative density limits to show
+#'   genome label
+#' @return A ggplot object
+#' 
+#' @export
+plot_orthogroup_distribution <- function(tg, limits=c(.5,.75,.9,.95)) {
+
+    n_orths <- tg$genes %>%
+    group_by(genome) %>%
+    summarise(
+        n_orthogroups=n_distinct(orthogroup)
+    )
+
+    dens <- density(n_orths$n_orthogroups)
+    dens_orth <- tibble(
+        x = dens$x,
+        y = dens$y
+    )
+    quantiles <- quantile(dens_orth$x, probs = limits)
+
+    dens_orth$q <- factor(
+        findInterval(dens_orth$x, quantiles)
+    )
+
+    labels <- tibble(
+        x = quantiles,
+        label = paste0(round(limits * 100, 2), "%")
+    )
+
+    plt <- dens_orth %>% 
+    ggplot(aes(x, y)) +
+    geom_line() +
+    geom_ribbon(aes(ymin=0, ymax=y, fill=q)) +
+    scale_fill_brewer() +
+    theme_classic() +
+    theme(
+        legend.position = "none"
+    )
+
+    plt + 
+    xlab("Number of orthogroups") +
+    ylab("Density") +
+    annotate("text",x=labels$x, y=-0.00003, label=labels$label)
+
+}

@@ -79,19 +79,21 @@ add_patterns <- function(tg) {
 #' A variable `node` will be added to the pattern table. 
 #'
 #' @param tg A tidygenomes object
-#' 
 #' @return A tidygenomes object
 #' 
 #' @export
 map_patterns <- function(tg) {
   
+  pattern <- genome <- node <- NULL
+  
+  if(is.null(tg$tree)) stop ("No tree found")
   if(is.null(tg$patterns)) stop("No patterns present")
   
   patterns_nodes <-
     tg$components %>%
     left_join(tg$genomes %>% select(genome, node), by = "genome") %>%
     group_by(pattern) %>%
-    summarize(node = ancestor_if_complete(node, tg$tree))
+    summarise(node = ancestor_if_complete(node, tg$tree))
   
   tg %>%
     modify_at("patterns", left_join, patterns_nodes, by = "pattern")
@@ -110,13 +112,14 @@ map_patterns <- function(tg) {
 #' @export
 add_orthogroup_measures <- function(tg) {
   
+  orthogroup <- genome <- NULL
   if (is.null(tg$genes)) stop("No gene table present")
   if (is.null(tg$orthogroups)) stop("No orthogroup table present")
   
   orthogroups_measures <-
     tg$genes %>%
     group_by(orthogroup) %>%
-    summarize(og_genes = n(), og_genomes = length(unique(genome)))
+    summarise(og_genes = n(), og_genomes = length(unique(genome)))
   
   tg %>%
     modify_at("orthogroups", left_join, orthogroups_measures, by = "orthogroup")
@@ -217,7 +220,7 @@ add_exclusivity <- function(tg, similarity) {
   phylogroups_exclusivity <-
     genomes_membership %>%
     group_by(phylogroup) %>%
-    summarize(
+    summarise(
       exclusive = all(consensus_phylogroup_member),
       min_similarity_within = min(min_similarity_within),
       max_similarity_between = max(max_similarity_between)
@@ -292,22 +295,22 @@ add_phylogroup_color <- function(tg, n = 12) {
 #'
 #' This function adds a variable gcd (gene content distance) to the pair table.
 #' As the name suggests, these are distances between genomes based on shared
-#' gene content. Various types of distances can be computed; the function uses
-#' the vegan package for this.
+#' gene content. Various types of distances can be computed; see [vegan::vegdist()].
 #'
 #' @param tg A tidygenomes object
-#' @param method See [vegan::vegdist()]
-#' @param binary See [vegan::vegdist()]
+#' @inheritDotParams vegan::vegdist
 #' 
 #' @return A tidygenomes object
 #' 
 #' @export
-add_gcd <- function(tg, method, binary) {
+add_gcd <- function(tg, ...) {
   
+  object_1 <- object_2 <- distance <- NULL
+  if (is.null(tg$pairs)) stop("No pairs present")
   pairs_gcd <-
     tg %>%
     pangenome_matrix() %>%
-    vegan::vegdist(method = method, binary = binary) %>%
+    vegan::vegdist(...) %>%
     dist2pairs() %>%
     rename(genome_1 = object_1, genome_2 = object_2, gcd = distance) %>%
     fix_pair_order()
@@ -357,7 +360,7 @@ collapse_species <- function(tg, core_threshold = 0.9) {
     left_join(genomes, by = "genome") %>%
     distinct(orthogroup, genome, species, sp_genomes) %>%
     group_by(orthogroup, species) %>%
-    summarize(status = if_else(
+    summarise(status = if_else(
       n() >= sp_genomes[1] * !! core_threshold,
       "core", "accessory"
     )) %>%

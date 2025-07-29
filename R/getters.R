@@ -126,3 +126,25 @@ orthogroups <- function(tg) {
   tg$orthogroups
   
 }
+
+#' Return amount of distinct genes, genomes and orthogroups
+#'
+#' This function returns the total amount of distinct genes, genomes and orthogroups in
+#' the tidygenomes object
+#'
+#' @param tg A tidygenomes object
+#' 
+#' @return Summary statistics of distinct genes, genomes and orthogroups
+#' 
+#' @export
+pansum <- function(tg) {
+
+    summ <- tg$genes %>%
+    summarize(
+        genomes = n_distinct(genome),
+        orthogroups= n_distinct(orthogroup),
+        genes = n_distinct(gene)
+    ) %>% as.data.frame()
+    row.names(summ) <- "unique"
+    summ %>% t()
+}

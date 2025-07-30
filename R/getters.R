@@ -75,6 +75,21 @@ genomes <- function(tg, extend = F) {
   
 }
 
+#' Return a genes table
+#'
+#' This function returns the gene table of a tidygenomes object.
+#'
+#' @param tg A tidygenomes object
+#' 
+#' @return A genome table
+#' 
+#' @export
+genes <- function(tg) {
+  
+  tg$genes
+  
+}
+
 #' Return a pair table
 #'
 #' This function returns the pair table of a tidygenomes object, possibly

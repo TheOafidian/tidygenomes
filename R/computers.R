@@ -1,0 +1,57 @@
+
+#' Estimates the Heap coefficient for a pangenome
+#'
+#' This function samples a large amount of orthogroups per genome and then fits
+#' a function through the resulting ratios to determine the Heap's coefficient
+#' using formula P = kN^lambda
+#' with P the amount of orthogroups, N the amount of genomes, 
+#' k an empiric parameter depending on the pangenome and lambda the Heap's coefficient.
+#'
+#' @param tg A tidygenomes object
+#' 
+#' @return A genome table
+#' 
+#' @export
+calculate_heap_coefficient <- function(tg, permutations=10, plot=False) {
+
+  ngenomes <- nrow(tg$genomes)
+  select_ngenomes <- seq(1, ngenomes, by=round(ngenomes/200))
+
+  # Calculates the # orthogroups per # of genomes
+  ## do this X permutations to get a general idea
+  inner_loop <- function() {
+  selected_genomes <- sapply(select_ngenomes, function(x) sample(tg$genomes$genome, x))
+  get_n_orthogroups_for_genomes <- function(tg, genomes) {
+    tg %>% 
+    filter_genomes(genome %in% genomes) %>% 
+    genes() %>% 
+    summarize(orthogroups = n_distinct(orthogroup)) %>%
+    pull(orthogroups)
+  }
+  orthogroups <- sapply(selected_genomes, function(x) get_n_orthogroups_for_genomes(tg, x))
+  data <- tibble(ngenomes=select_ngenomes,orthogroups=orthogroups)
+  }
+
+  combined_data <- tibble()
+  for (i in seq(1,permutations)) {
+    message(paste("Running permutation",i))
+    perm_data <- inner_loop()
+    combined_data <- bind_rows(combined_data, perm_data)
+  }
+
+   fit <- nls(orthogroups~a*ngenomes^b, start=list(a=1,b=1), data=combined_data)
+   result <- summary(fit)
+   a <- result$coefficients[1,1]
+   b <- result$coefficients[2,1]
+
+   plot <-combined_data %>%
+   ggplot(aes(x=ngenomes, y=orthogroups)) +
+   geom_point() +
+   stat_function(fun=function(x) a * x^b, color="red")
+
+   return (list(
+    model=fit,
+    heap=b,
+    plot=plot
+   ))
+}

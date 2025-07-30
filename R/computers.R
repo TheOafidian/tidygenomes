@@ -14,6 +14,7 @@
 #' @export
 calculate_heap_coefficient <- function(tg, permutations=10, plot=False) {
 
+  # TODO: calculate a smart # permutations and steps based on size of pangenome
   ngenomes <- nrow(tg$genomes)
   select_ngenomes <- seq(1, ngenomes, by=ceiling(ngenomes/200))
 
@@ -38,12 +39,12 @@ calculate_heap_coefficient <- function(tg, permutations=10, plot=False) {
     perm_data <- inner_loop()
     combined_data <- bind_rows(combined_data, perm_data)
   }
-  fit <- tryCatch ({
-   return(nls(orthogroups~a*ngenomes^b, start=list(a=1,b=0.4), data=combined_data))
+  tryCatch ({
+   fit <- nls(orthogroups~a*ngenomes^b, start=list(a=1,b=0.4), data=combined_data)
    }, error = function(msg) {
    message("Nonlinear regression failed; likely you have too little genomes.")
    message("Using a log transformed verion of the formula")
-   return(lm(log(orthogroups)~log(ngenomes), data=combined_data))
+   fit <- lm(log(orthogroups)~log(ngenomes), data=combined_data)
    })
    result <- summary(fit)
    a <- result$coefficients[1,1]
@@ -63,6 +64,7 @@ calculate_heap_coefficient <- function(tg, permutations=10, plot=False) {
 
    return (list(
     model=fit,
+    data=combined_data,
     heap=b,
     plot=plot
    ))

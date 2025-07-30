@@ -49,10 +49,17 @@ calculate_heap_coefficient <- function(tg, permutations=10, plot=False) {
    a <- result$coefficients[1,1]
    b <- result$coefficients[2,1]
 
+  if (any(fit$call %>% as.character() %>% startsWith("lm"))) {
+   plot <-combined_data %>%
+   ggplot(aes(x=log(ngenomes), y=log(orthogroups))) +
+   geom_point() +
+   geom_smooth(method="lm", color="red")
+  } else {
    plot <-combined_data %>%
    ggplot(aes(x=ngenomes, y=orthogroups)) +
    geom_point() +
    stat_function(fun=function(x) a * x^b, color="red")
+  }
 
    return (list(
     model=fit,

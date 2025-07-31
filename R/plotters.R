@@ -79,7 +79,8 @@ upset_plot <- function(
   genome_col <- rlang::enexpr(genome_col)
   genome_bold <- rlang::enexpr(genome_bold)
   
-  if (is.null(tg$patterns)) stop("no patterns found")
+  if (is.null(tg$nodes)) stop("This function requires node data")
+  if (is.null(tg$patterns)) tg <- tg %>% add_patterns()
   
   tg$patterns <-
     tg$patterns %>%

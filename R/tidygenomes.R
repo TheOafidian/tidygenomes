@@ -6,7 +6,8 @@
 #' @import dplyr
 #' @import tidyr
 #' @import purrr
-#' 
+#' @import stats
+#'
 #' @details
-#' `tidygenomes` contains six types of functions: readers, importers,
-#' handlers, enhancers, getters and plotters.
+#' `tidygenomes` contains seven types of functions: readers, importers,
+#' handlers, enhancers, getters, computers and plotters.

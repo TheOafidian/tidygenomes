@@ -8,6 +8,11 @@ calculate_heap_coefficient(tg, permutations = 10, plot = False)
 }
 \arguments{
 \item{tg}{A tidygenomes object}
+
+\item{permutations}{How many times the original data will be sampled for a range of genome numbers.}
+
+\item{plot}{Whether to return a plot showing the datapoints and curve used to calculate the coefficient.
+Defaults to true.}
 }
 \value{
 A genome table

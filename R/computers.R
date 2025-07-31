@@ -4,10 +4,13 @@
 #' This function samples a large amount of orthogroups per genome and then fits
 #' a function through the resulting ratios to determine the Heap's coefficient
 #' using formula P = kN^lambda
-#' with P the amount of orthogroups, N the amount of genomes, 
+#' with P the amount of orthogroups, N the amount of genomes,
 #' k an empiric parameter depending on the pangenome and lambda the Heap's coefficient.
 #'
 #' @param tg A tidygenomes object
+#' @param permutations How many times the original data will be sampled for a range of genome numbers.
+#' @param plot Whether to return a plot showing the datapoints and curve used to calculate the coefficient.
+#' Defaults to true.
 #' 
 #' @return A genome table
 #' 
@@ -47,25 +50,29 @@ calculate_heap_coefficient <- function(tg, permutations=10, plot=False) {
    fit <- lm(log(orthogroups)~log(ngenomes), data=combined_data)
    })
    result <- summary(fit)
-   a <- result$coefficients[1,1]
-   b <- result$coefficients[2,1]
+   a <- result$coefficients[1, 1]
+   b <- result$coefficients[2, 1]
 
-  if (any(fit$call %>% as.character() %>% startsWith("lm"))) {
-   plot <-combined_data %>%
-   ggplot(aes(x=log(ngenomes), y=log(orthogroups))) +
-   geom_point() +
-   geom_smooth(method="lm", color="red")
-  } else {
-   plot <-combined_data %>%
-   ggplot(aes(x=ngenomes, y=orthogroups)) +
-   geom_point() +
-   stat_function(fun=function(x) a * x^b, color="red")
+  results <- list(
+    model = fit,
+    data = combined_data,
+    heap = b,
+    plot = plot
+  )
+
+  if (plot) {
+      if (any(fit$call %>% as.character() %>% startsWith("lm"))) {
+        results$plot <-combined_data %>%
+        ggplot(aes(x=log(ngenomes), y=log(orthogroups))) +
+        geom_point() +
+        geom_smooth(method = "lm", color = "red")
+      } else {
+      results$plot <- combined_data %>%
+      ggplot(aes(x = ngenomes, y = orthogroups)) +
+      geom_point() +
+      stat_function(fun = function(x) a * x^b, color = "red")
+      }
   }
 
-   return (list(
-    model=fit,
-    data=combined_data,
-    heap=b,
-    plot=plot
-   ))
+  return(results)
 }

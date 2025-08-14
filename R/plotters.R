@@ -183,7 +183,10 @@ upset_plot <- function(
 #'   heatmap
 #' @param complete_pairs Should the pairs be completed?
 #' @return A ggplot object
-#' 
+#'
+#' @importFrom dplyr mutate
+#' @importFrom ggplot2 geom_tile 
+#' @importFrom ggplot2 ggplot
 #' @export
 heatmap <- function(tg, genome_label, distance, complete_pairs = TRUE) {
   

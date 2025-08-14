@@ -4,7 +4,7 @@
 \alias{calculate_heap_coefficient}
 \title{Estimates the Heap coefficient for a pangenome}
 \usage{
-calculate_heap_coefficient(tg, permutations = 10, plot = False)
+calculate_heap_coefficient(tg, permutations = 10, plot = FALSE)
 }
 \arguments{
 \item{tg}{A tidygenomes object}

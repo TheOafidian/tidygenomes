@@ -42,13 +42,15 @@ calculate_heap_coefficient <- function(tg, permutations=10, plot=FALSE) {
     perm_data <- inner_loop()
     combined_data <- bind_rows(combined_data, perm_data)
   }
-  tryCatch ({
-   fit <- nls(orthogroups~a*ngenomes^b, start=list(a=1,b=0.4), data=combined_data)
-   }, error = function(msg) {
+  fit <- tryCatch ({
+   return(
+       nls(orthogroups~a*ngenomes^b, start=list(a=1,b=0.4), data=combined_data)
+   )}, error = function(msg) {
    message("Nonlinear regression failed; likely you have too little genomes.")
    message("Using a log transformed verion of the formula")
-   fit <- lm(log(orthogroups)~log(ngenomes), data=combined_data)
-   })
+   return(
+       lm(log(orthogroups)~log(ngenomes), data=combined_data)
+   )})
    result <- summary(fit)
    a <- result$coefficients[1, 1]
    b <- result$coefficients[2, 1]

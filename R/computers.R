@@ -15,7 +15,7 @@
 #' @return A genome table
 #' 
 #' @export
-calculate_heap_coefficient <- function(tg, permutations=10, plot=False) {
+calculate_heap_coefficient <- function(tg, permutations=10, plot=FALSE) {
 
   # TODO: calculate a smart # permutations and steps based on size of pangenome
   ngenomes <- nrow(tg$genomes)
